@@ -49,7 +49,7 @@ function update_script() {
 
   NODE_VERSION="22" NODE_MODULE="yarn" setup_nodejs
 
-  RELEASE=$(curl -fsSL https://api.github.com/repos/NginxProxyManager/nginx-proxy-manager/releases/latest |
+  RELEASE=$(curl -fsSL https://api.github.com/repos/NginxProxyManager/nginx-proxy-manager/releases/tags/v2.12.6 |
     grep "tag_name" |
     awk '{print substr($2, 3, length($2)-4) }')
 
