@@ -2490,10 +2490,18 @@ function fetch_and_deploy_gh_release() {
     return 1
   }
 
-  local json tag_name
+  local json tag_name requested_version
   json=$(</tmp/gh_rel.json)
   tag_name=$(echo "$json" | jq -r '.tag_name // .name // empty')
-  [[ "$tag_name" =~ ^v ]] && version="${tag_name:1}" || version="$tag_name"
+  requested_version="$version"  # Save the originally requested version
+  
+  # Only override version if it was "latest" - otherwise keep the requested version
+  if [[ "$requested_version" == "latest" ]]; then
+    [[ "$tag_name" =~ ^v ]] && version="${tag_name:1}" || version="$tag_name"
+  else
+    # Strip 'v' prefix from requested version if present
+    [[ "$version" =~ ^v ]] && version="${version:1}"
+  fi
 
   if [[ "$current_version" == "$version" ]]; then
     $STD msg_ok "$app is already up-to-date (v$version)"
