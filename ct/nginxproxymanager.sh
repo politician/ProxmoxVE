@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
-source <(curl -fsSL https://raw.githubusercontent.com/politician/ProxmoxVE/main/misc/build.func)
+# Detect current branch from GITHUB_REF_NAME env var or default to main
+BRANCH="${GITHUB_REF_NAME:-main}"
+# Validate branch name to prevent injection attacks
+# Block path traversal (../), hidden directories (./), command injection, and special characters
+if [[ ! "$BRANCH" =~ ^[a-zA-Z0-9/._-]+$ ]] || [[ "$BRANCH" =~ \.\. ]] || [[ "$BRANCH" =~ /\. ]] || [[ "$BRANCH" =~ ^\. ]]; then
+  echo "Warning: Invalid branch name \"$BRANCH\" detected, defaulting to main" >&2
+  BRANCH="main"
+fi
+source <(curl -fsSL https://raw.githubusercontent.com/politician/ProxmoxVE/${BRANCH}/misc/build.func)
 # Copyright (c) 2021-2026 community-scripts ORG
 # Author: tteck (tteckster) | Co-Author: CrazyWolf13
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
