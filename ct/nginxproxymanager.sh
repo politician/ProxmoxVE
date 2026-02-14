@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Detect current branch or default to main
+# Detect current branch from GITHUB_REF_NAME env var or default to main
 BRANCH="${GITHUB_REF_NAME:-main}"
-# Validate branch name to prevent injection attacks (alphanumeric, /, _, -, . but no ..)
-if [[ ! "$BRANCH" =~ ^[a-zA-Z0-9/._-]+$ ]] || [[ "$BRANCH" =~ \.\. ]]; then
+# Validate branch name to prevent injection attacks
+# Block path traversal (../), command injection, and special characters
+if [[ ! "$BRANCH" =~ ^[a-zA-Z0-9/._-]+$ ]] || [[ "$BRANCH" =~ \.\. ]] || [[ "$BRANCH" =~ /\./ ]] || [[ "$BRANCH" =~ /\.\. ]]; then
   echo "Warning: Invalid branch name detected, defaulting to main" >&2
   BRANCH="main"
 fi
