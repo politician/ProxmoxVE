@@ -4,7 +4,7 @@ BRANCH="${GITHUB_REF_NAME:-main}"
 # Validate branch name to prevent injection attacks
 # Block path traversal (../), hidden directories (./), command injection, and special characters
 if [[ ! "$BRANCH" =~ ^[a-zA-Z0-9/._-]+$ ]] || [[ "$BRANCH" =~ \.\. ]] || [[ "$BRANCH" =~ /\. ]] || [[ "$BRANCH" =~ ^\. ]]; then
-  echo "Warning: Invalid branch name detected, defaulting to main" >&2
+  echo "Warning: Invalid branch name \"$BRANCH\" detected, defaulting to main" >&2
   BRANCH="main"
 fi
 source <(curl -fsSL https://raw.githubusercontent.com/politician/ProxmoxVE/${BRANCH}/misc/build.func)
